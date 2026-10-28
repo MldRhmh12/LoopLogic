@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LoopLogic - Media Pembelajaran Interaktif Algoritma Perulangan</title>
+  <meta name="description" content="Media pembelajaran interaktif berbasis web untuk materi Algoritma Perulangan (Kelas X SMA/SMK) dengan palet warna dan estetika elegan LoopLogic.">
+  
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            'space-cadet': '#25344F',
+            'slate-gray': '#617891',
+            'tan': '#D5B893',
+            'coffee': '#6F4D38',
+            'caput': '#632024',
+            'cloudy': '#B1C7D4',
+            'tsunami': '#849AAD',
+            'weather': '#A1947F',
+            'volcanic': '#605246',
+            'red-oxide': '#5E1C23',
+          },
+          fontFamily: {
+            'display': ['Nunito', 'sans-serif'],
+            'body': ['Inter', 'sans-serif'],
+            'mono': ['JetBrains Mono', 'monospace'],
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-space-cadet text-cloudy antialiased min-h-screen">
+
+  <!-- Confetti Canvas (Fixed & Non-blocking) -->
+  <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 w-full h-full"></canvas>
+
+  <!-- ========================================== -->
+  <!-- TOP NAVBAR -->
+  <!-- ========================================== -->
+  <header class="fixed top-0 left-0 right-0 z-40 bg-space-cadet/90 backdrop-blur-md border-b border-white/10 shadow-lg">
+    <div class="max-w-6xl mx-auto px-3.5 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between gap-2.5 sm:gap-3">
+      
+      <!-- Brand Logo -->
+      <div class="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none" onclick="navigateTo('home')">
+        <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-tan/15 border border-tan/30 flex items-center justify-center text-tan shadow-sm shrink-0">
+          <i data-lucide="cpu" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5 sm:gap-2">
+            <span class="text-base sm:text-xl font-display font-extrabold tracking-tight text-white">LoopLogic</span>
+          </div>
+          <div class="text-[10px] text-tsunami hidden sm:block">Algoritma Perulangan</div>
+        </div>
+      </div>
+
+      <!-- Desktop Nav Buttons -->
+      <nav class="hidden md:flex items-center gap-1 bg-space-cadet-dark/70 p-1 rounded-xl border border-white/5">
+        <button onclick="navigateTo('home')" data-target="home" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+          <i data-lucide="home" class="w-3.5 h-3.5"></i>
+          <span>Beranda</span>
+        </button>
+        <button onclick="navigateTo('materi')" data-target="materi" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+          <i data-lucide="book-open" class="w-3.5 h-3.5"></i>
+          <span>Materi Modul</span>
+        </button>
+        <button onclick="navigateTo('simulator-dashboard')" data-target="simulator-dashboard" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+          <i data-lucide="play-circle" class="w-3.5 h-3.5"></i>
+          <span>Simulator</span>
+        </button>
+        <button onclick="navigateTo('kuis')" data-target="kuis" class="nav-btn px-3.5 py-1.5 rounded-lg text-xs font-display font-bold uppercase tracking-wider transition flex items-center gap-1.5">
+          <i data-lucide="check-square" class="w-3.5 h-3.5"></i>
+          <span>Evaluasi Kuis</span>
+        </button>
+      </nav>
+
+      <!-- Settings Button (Pojok Kanan Atas) -->
+      <div class="flex items-center gap-2">
+        <button onclick="openSettingsModal()" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-tan/10 hover:bg-tan/20 border border-tan/30 text-tan font-display font-bold text-xs transition shadow-sm">
+          <i data-lucide="sliders-horizontal" class="w-3.5 h-3.5 sm:w-4 sm:h-4"></i>
+          <span class="hidden sm:inline">Pengaturan</span>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MOBILE BOTTOM NAVBAR (4 MENU) -->
+  <nav class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 bg-space-cadet/95 backdrop-blur-lg border-t border-white/10 px-2 py-1.5 flex justify-around items-center">
+    <button onclick="navigateTo('home')" data-target="home" class="nav-btn flex flex-col items-center py-1 px-2 rounded-lg text-[10px] font-bold">
+      <i data-lucide="home" class="w-4 h-4 mb-0.5"></i>
+      <span>Beranda</span>
+    </button>
+    <button onclick="navigateTo('materi')" data-target="materi" class="nav-btn flex flex-col items-center py-1 px-2 rounded-lg text-[10px] font-bold">
+      <i data-lucide="book-open" class="w-4 h-4 mb-0.5"></i>
+      <span>Materi</span>
+    </button>
+    <button onclick="navigateTo('simulator-dashboard')" data-target="simulator-dashboard" class="nav-btn flex flex-col items-center py-1 px-2 rounded-lg text-[10px] font-bold">
+      <i data-lucide="play-circle" class="w-4 h-4 mb-0.5"></i>
+      <span>Simulator</span>
+    </button>
+    <button onclick="navigateTo('kuis')" data-target="kuis" class="nav-btn flex flex-col items-center py-1 px-2 rounded-lg text-[10px] font-bold">
+      <i data-lucide="check-square" class="w-4 h-4 mb-0.5"></i>
+      <span>Kuis</span>
+    </button>
+  </nav>
+
+  <!-- ========================================== -->
+  <!-- MAIN CONTAINER -->
+  <!-- ========================================== -->
+  <main class="max-w-6xl mx-auto px-8 sm:px-10 pt-28 sm:pt-32 pb-20 sm:pb-12">
+    
+    <!-- ========================================== -->
+    <!-- 0. HALAMAN HOMEPAGE / LANDING PAGE (DEFAULT AWAL) -->
+    <!-- ========================================== -->
+    <section id="page-home" class="page-view space-y-4 sm:space-y-6 animate-fadeIn">
+      
+      <!-- Hero Presentation (Rapi & Responsif) -->
+      <div class="pt-1 pb-3 sm:pt-2 sm:pb-6 px-1 sm:px-2 relative text-center sm:text-left">
+        <div class="max-w-3xl space-y-3 sm:space-y-4 relative z-10">
+          
+          <h1 class="text-2xl sm:text-4xl font-display font-black text-white leading-tight">
+            Kuasai Logika <span class="text-tan">Algoritma Perulangan</span> dengan Simulasi Nyata
+          </h1>
+          
+          <p class="text-xs sm:text-sm text-cloudy leading-relaxed max-w-2xl mx-auto sm:mx-0">
+            Selamat datang di <strong>LoopLogic</strong>. Pelajari struktur kontrol perulangan (FOR, WHILE, dan DO-WHILE) melalui materi kurikulum terstruktur, 6 simulator interaktif beranimasi, tantangan tebak logika kontekstual, dan evaluasi pemahaman mandiri.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 pt-1 sm:pt-2 max-w-xs sm:max-w-none mx-auto sm:mx-0">
+            <button onclick="navigateTo('materi')" class="btn-primary w-full sm:w-auto text-xs sm:text-sm">
+              <i data-lucide="book-open" class="w-4 h-4"></i> Mulai Belajar Teori
+            </button>
+            <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary w-full sm:w-auto text-xs sm:text-sm">
+              <i data-lucide="play-circle" class="w-4 h-4"></i> Masuk 6 Simulator Lab
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3 Feature Highlight Cards -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-3.5 sm:gap-6">
+        
+        <div class="glass-card p-4 sm:p-5 space-y-2 border-t-2 border-t-tan">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-tan/15 border border-tan/30 text-tan flex items-center justify-center mb-1.5 sm:mb-2">
+            <i data-lucide="book" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          </div>
+          <h3 class="text-sm sm:text-base font-display font-extrabold text-white">1. Modul Komprehensif</h3>
+          <p class="text-xs text-cloudy/80 leading-relaxed">
+            Berlandaskan Kurikulum Merdeka &amp; buku Rinaldi Munir (2021). Mencakup Konsep Dasar, FOR Loop, WHILE Loop, DO-WHILE, dan Nested Loop.
+          </p>
+        </div>
+
+        <div class="glass-card p-4 sm:p-5 space-y-2 border-t-2 border-t-emerald-400">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 flex items-center justify-center mb-1.5 sm:mb-2">
+            <i data-lucide="sliders" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          </div>
+          <h3 class="text-sm sm:text-base font-display font-extrabold text-white">2. 6 Simulator Interaktif</h3>
+          <p class="text-xs text-cloudy/80 leading-relaxed">
+            2 simulasi terpandu (Contoh FOR &amp; WHILE) serta 4 tantangan kasus nyata (Vending Machine, Dadu, Kasir Supermarket, Traffic Light) di mana siswa menebak jenis perulangannya.
+          </p>
+        </div>
+
+        <div class="glass-card p-4 sm:p-5 space-y-2 border-t-2 border-t-sky-400">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 text-sky-300 flex items-center justify-center mb-1.5 sm:mb-2">
+            <i data-lucide="check-square" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+          </div>
+          <h3 class="text-sm sm:text-base font-display font-extrabold text-white">3. Evaluasi Kuis Mandiri</h3>
+          <p class="text-xs text-cloudy/80 leading-relaxed">
+            10 soal untuk menguji pemahaman konsep, penelusuran variabel, kondisi terminasi, dan pencegahan infinite loop dengan skor instan.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Learning Roadmap -->
+      <div class="glass-card p-4 sm:p-7 space-y-3.5 sm:space-y-4">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2.5 sm:pb-3">
+          <h3 class="text-xs sm:text-base font-display font-extrabold text-white flex items-center gap-1.5 sm:gap-2">
+            <i data-lucide="map" class="w-4 h-4 text-tan"></i> Alur Pembelajaran Mandiri
+          </h3>
+          <span class="text-[10px] sm:text-[11px] text-tan font-mono">Langkah 1 s.d. 4</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 text-center">
+          <div class="p-2.5 sm:p-3 rounded-xl bg-space-cadet border border-white/5 space-y-1">
+            <div class="text-[11px] sm:text-xs font-mono font-bold text-tan">Langkah 1</div>
+            <div class="text-xs font-bold text-white">Pelajari Konsep</div>
+            <p class="text-[10px] text-slate-gray">Pahami 4 komponen loop</p>
+          </div>
+          <div class="p-2.5 sm:p-3 rounded-xl bg-space-cadet border border-white/5 space-y-1">
+            <div class="text-[11px] sm:text-xs font-mono font-bold text-tan">Langkah 2</div>
+            <div class="text-xs font-bold text-white">Contoh Terpandu</div>
+            <p class="text-[10px] text-slate-gray">Uji simulasi gunung &amp; brankas</p>
+          </div>
+          <div class="p-2.5 sm:p-3 rounded-xl bg-space-cadet border border-white/5 space-y-1">
+            <div class="text-[11px] sm:text-xs font-mono font-bold text-tan">Langkah 3</div>
+            <div class="text-xs font-bold text-white">Tebak Tantangan</div>
+            <p class="text-[10px] text-slate-gray">Tebak loop di 4 skenario</p>
+          </div>
+          <div class="p-2.5 sm:p-3 rounded-xl bg-space-cadet border border-white/5 space-y-1">
+            <div class="text-[11px] sm:text-xs font-mono font-bold text-tan">Langkah 4</div>
+            <div class="text-xs font-bold text-white">Evaluasi Kuis</div>
+            <p class="text-[10px] text-slate-gray">Raih nilai &gt;= 80</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 1. HALAMAN MATERI (5 TAB BARS) -->
+    <!-- ========================================== -->
+    <section id="page-materi" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <!-- Banner Sumber Buku -->
+      <div class="glass-card p-5 sm:p-6 border border-tan/20">
+        <div class="space-y-2">
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white">
+            Modul Pembelajaran Teori: <span class="text-tan">Algoritma Perulangan</span>
+          </h2>
+          <p class="text-cloudy text-xs sm:text-sm leading-relaxed">
+            Kuasai konsep fundamental perulangan (looping), struktur logika penentu, visualisasi eksekusi baris per baris, serta implementasi nyata dalam sains komputer.
+          </p>
+        </div>
+      </div>
+
+      <!-- YouTube Shorts Embed -->
+      <div class="glass-card p-4 sm:p-6 flex flex-col md:flex-row items-center gap-5">
+        <div class="shorts-container shrink-0 mx-auto">
+          <iframe 
+            class="w-full h-full"
+            src="https://www.youtube.com/embed/li1sS5uNagU" 
+            title="Pengantar Algoritma Perulangan" 
+            frameborder="0" 
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+            allowfullscreen>
+          </iframe>
+        </div>
+        <div class="space-y-2.5">
+          <span class="badge-clean badge-rose">
+            <i data-lucide="video" class="w-3.5 h-3.5"></i> Video Pengantar Konsep (1 Menit)
+          </span>
+          <h3 class="text-lg sm:text-xl font-display font-bold text-white">Mengapa Algoritma Memerlukan Perulangan?</h3>
+          <p class="text-xs sm:text-sm text-cloudy leading-relaxed">
+            Dalam dunia nyata, komputer dirancang untuk memproses ribuan tugas serupa secara otomatis (seperti memproses nilai ratusan siswa atau mencetak tiket transaksi). Tanpa perulangan, pemrogram harus mengetikkan baris instruksi yang sama berulang kali yang menyebabkan pemborosan kode, rawan kekeliruan, dan sulit dikelola.
+          </p>
+          <div class="p-3 rounded-xl bg-space-cadet border border-tan/25 text-xs text-tan leading-relaxed font-medium">
+            <strong class="text-white">Prinsip Inti:</strong> Perulangan memungkinkan komputer mengeksekusi sekumpulan instruksi berkali-kali secara otomatis sampai <em>kondisi berhenti (terminasi)</em> terpenuhi.
+          </div>
+        </div>
+      </div>
+
+      <!-- 5 TABS NAVIGATION -->
+      <div class="flex flex-wrap gap-1.5 sm:gap-2 pt-1">
+        <button id="materi-tab-btn-1" onclick="switchMateriTab(1)" class="materi-tab tab-active flex-1 py-2 px-2.5 rounded-lg font-bold text-xs sm:text-sm text-center transition">
+          <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+          <span>1. Konsep</span>
+        </button>
+        <button id="materi-tab-btn-2" onclick="switchMateriTab(2)" class="materi-tab tab-inactive flex-1 py-2 px-2.5 rounded-lg font-bold text-xs sm:text-sm text-center transition">
+          <i data-lucide="repeat" class="w-3.5 h-3.5"></i>
+          <span>2. FOR</span>
+        </button>
+        <button id="materi-tab-btn-3" onclick="switchMateriTab(3)" class="materi-tab tab-inactive flex-1 py-2 px-2.5 rounded-lg font-bold text-xs sm:text-sm text-center transition">
+          <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+          <span>3. WHILE</span>
+        </button>
+        <button id="materi-tab-btn-4" onclick="switchMateriTab(4)" class="materi-tab tab-inactive flex-1 py-2 px-2.5 rounded-lg font-bold text-xs sm:text-sm text-center transition">
+          <i data-lucide="refresh-cw" class="w-3.5 h-3.5"></i>
+          <span>4. DO-WHILE</span>
+          <i data-lucide="lock" id="lock-badge-4" class="w-3 h-3 text-tan ml-0.5"></i>
+        </button>
+        <button id="materi-tab-btn-5" onclick="switchMateriTab(5)" class="materi-tab tab-inactive flex-1 py-2 px-2.5 rounded-lg font-bold text-xs sm:text-sm text-center transition">
+          <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+          <span>5. Nested</span>
+          <i data-lucide="lock" id="lock-badge-5" class="w-3 h-3 text-tan ml-0.5"></i>
+        </button>
+      </div>
+
+      <!-- TAB CONTENT 1: KONSEP DASAR -->
+      <div id="materi-content-1" class="glass-card p-5 sm:p-7 space-y-5">
+        <div class="border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-tan uppercase tracking-wider">Bab 1: Fundamental Algoritma</span>
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">Konsep Dasar Struktur Perulangan (Looping)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm leading-relaxed text-cloudy">
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book" class="w-4 h-4 text-tan"></i> Definisi Formal (Buku Teks)
+            </h3>
+            <p>
+              Berdasarkan buku <em>Algoritma dan Pemrograman</em> (Rinaldi Munir, 2021), <strong>Struktur Perulangan (Repetition/Loop)</strong> adalah konstruksi algoritma yang memungkinkan sekumpulan instruksi dieksekusi berulang kali selama kondisi pengulangan bernilai benar (<em>True</em>) dan berhenti seketika saat kondisi bernilai salah (<em>False</em>).
+            </p>
+            <p>
+              Setiap struktur perulangan yang baik <strong>WAJIB</strong> memiliki 4 komponen fundamental:
+            </p>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong>Inisialisasi (Initialization):</strong> Penentuan nilai awal variabel pengendali loop.</li>
+              <li><strong>Kondisi Terminasi (Condition Test):</strong> Ekspresi logika penentu lanjut atau berhentinya siklus.</li>
+              <li><strong>Badan Loop (Loop Body):</strong> Kumpulan instruksi yang dieksekusi berulang.</li>
+              <li><strong>Pembaruan Nilai (Modifier / Step):</strong> Perubahan variabel agar kondisi berhenti tercapai.</li>
+            </ul>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4 text-tan"></i> Contoh Penggunaan dalam Kehidupan Nyata
+            </h3>
+            <div class="space-y-2">
+              <div class="p-3 bg-space-cadet rounded-xl border border-white/10">
+                <div class="font-bold text-tan">1. Putaran Jarum Detik Jam Dinding</div>
+                <div class="text-cloudy/80 text-xs mt-0.5">Jarum detik berputar 60 kali (1 s.d. 60) untuk membentuk 1 satuan menit.</div>
+              </div>
+              <div class="p-3 bg-space-cadet rounded-xl border border-white/10">
+                <div class="font-bold text-tan">2. Pengurangan Daya Tahan Karakter Game</div>
+                <div class="text-cloudy/80 text-xs mt-0.5">Setiap rintangan mengurangi daya tahan sebesar 1 poin hingga bernilai 0 (Terminasi).</div>
+              </div>
+              <div class="p-3 bg-space-cadet rounded-xl border border-white/10">
+                <div class="font-bold text-tan">3. Dispenser Mesin Vending Otomatis</div>
+                <div class="text-cloudy/80 text-xs mt-0.5">Mesin mengeluarkan kaleng minuman satu per satu sampai jumlah pesanan terpenuhi.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-editor-box text-xs">
+          <div class="syntax-comment mb-1">// Pola Dasar Eksekusi Perulangan (Pseudocode / Javascript)</div>
+          <span class="syntax-keyword">let</span> hitungan = <span class="syntax-number">1</span>; <span class="syntax-comment">// 1. Inisialisasi</span><br>
+          <span class="syntax-keyword">while</span> (hitungan &lt;= <span class="syntax-number">5</span>) { <span class="syntax-comment">// 2. Kondisi Terminasi</span><br>
+          &nbsp;&nbsp;<span class="syntax-fn">console.log</span>(<span class="syntax-string">"Tugas ke-"</span> + hitungan); <span class="syntax-comment">// 3. Badan Loop</span><br>
+          &nbsp;&nbsp;hitungan++; <span class="syntax-comment">// 4. Modifier / Pembaruan</span><br>
+          }
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 2: FOR LOOP -->
+      <div id="materi-content-2" class="glass-card p-5 sm:p-7 space-y-5 hidden">
+        <div class="border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-tan uppercase tracking-wider">Bab 2: Counted Loop</span>
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">Struktur Perulangan FOR (Counted Loop)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm leading-relaxed text-cloudy">
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book" class="w-4 h-4 text-tan"></i> Definisi &amp; Karakteristik FOR
+            </h3>
+            <p>
+              Perulangan <strong>FOR</strong> digunakan ketika <strong>jumlah pengulangan sudah diketahui dengan pasti</strong> sebelum perulangan itu sendiri dimulai (*Counted Loop*).
+            </p>
+            <p>
+              Sintaksis FOR menggabungkan inisialisasi, pengujian kondisi, dan modifier dalam <strong>satu baris pernyataan</strong>:
+            </p>
+            <div class="p-3 bg-space-cadet rounded-xl font-mono text-xs text-tan border border-tan/20">
+              for (inisialisasi; kondisi; modifier) {<br>
+              &nbsp;&nbsp;// instruksi yang diulang<br>
+              }
+            </div>
+            <ul class="list-disc pl-5 space-y-1">
+              <li><strong>FOR Increment (Hitung Maju):</strong> Nilai variabel bertambah (misal: <code>i++</code>).</li>
+              <li><strong>FOR Decrement (Hitung Mundur):</strong> Nilai variabel berkurang (misal: <code>i--</code>).</li>
+            </ul>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4 text-tan"></i> Contoh Nyata
+            </h3>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">1. Hitung Mundur Lampu Lalu Lintas (10 s.d. 0)</div>
+              <p class="text-xs text-cloudy/80">Timer lampu merah menghitung mundur 10 detik secara pasti sebelum berganti ke lampu hijau.</p>
+            </div>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">2. Pengurangan Nyawa Karakter Game (5 ➔ 0)</div>
+              <p class="text-xs text-cloudy/80">Karakter menghadapi rintangan gunung, tiap kegagalan mengurangi daya tahan hingga 0.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-editor-box text-xs">
+          <div class="syntax-comment mb-1">// Contoh Kode FOR Decrement: Pengurangan Daya Tahan</div>
+          <span class="syntax-keyword">for</span> (<span class="syntax-keyword">let</span> nyawa = <span class="syntax-number">5</span>; nyawa &gt; <span class="syntax-number">0</span>; nyawa--) {<br>
+          &nbsp;&nbsp;<span class="syntax-fn">console.log</span>(<span class="syntax-string">`Karakter terkena rintangan, sisa daya tahan: ${nyawa}`</span>);<br>
+          }<br>
+          <span class="syntax-fn">console.log</span>(<span class="syntax-string">"Daya tahan habis, siklus berhenti."</span>);
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 3: WHILE LOOP -->
+      <div id="materi-content-3" class="glass-card p-5 sm:p-7 space-y-5 hidden">
+        <div class="border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-tan uppercase tracking-wider">Bab 3: Uncounted / Pre-test Loop</span>
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">Struktur Perulangan WHILE (Pre-test Loop)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm leading-relaxed text-cloudy">
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book" class="w-4 h-4 text-tan"></i> Definisi &amp; Cara Kerja WHILE
+            </h3>
+            <p>
+              Perulangan <strong>WHILE</strong> adalah jenis perulangan *Uncounted (Pre-test Loop)*, di mana <strong>syarat kondisi diuji terlebih dahulu di awal</strong> sebelum blok instruksi dijalankan.
+            </p>
+            <p>
+              Jika saat pertama kali diuji kondisi bernilai <em>False</em>, maka instruksi di dalam WHILE <strong>TIDAK AKAN PERNAH DIEKSEKUSI SAMA SEKALI</strong> (0 kali).
+            </p>
+            <div class="p-3 bg-caput/30 rounded-xl border border-caput/50 text-xs text-red-200">
+              <strong class="text-red-300">Peringatan Infinite Loop:</strong> Jika variabel pengendali di dalam badan WHILE tidak pernah diubah atau selalu True, program akan crash!
+            </div>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4 text-tan"></i> Contoh Penggunaan Nyata
+            </h3>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">1. Masukkan PIN Brankas / Password</div>
+              <p class="text-xs text-cloudy/80">Sistem akan terus meminta input PIN selama tebakan masih salah.</p>
+            </div>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">2. Barcode Scanner Kasir Supermarket</div>
+              <p class="text-xs text-cloudy/80">Kasir melakukan scan barang belanjaan pembeli satu per satu sampai keranjang kosong dan pembeli menekan Bayar.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-editor-box text-xs">
+          <div class="syntax-comment mb-1">// Contoh Kode WHILE Loop: Lempar Dadu Sampai Angka Target</div>
+          <span class="syntax-keyword">let</span> dadu = <span class="syntax-number">0</span>;<br>
+          <span class="syntax-keyword">while</span> (dadu !== <span class="syntax-number">6</span>) {<br>
+          &nbsp;&nbsp;dadu = Math.floor(Math.random() * <span class="syntax-number">6</span>) + <span class="syntax-number">1</span>;<br>
+          &nbsp;&nbsp;<span class="syntax-fn">console.log</span>(<span class="syntax-string">`Hasil lemparan dadu: ${dadu}`</span>);<br>
+          }<br>
+          <span class="syntax-fn">console.log</span>(<span class="syntax-string">"Target angka 6 tercapai! Loop selesai."</span>);
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 4: DO-WHILE LOOP -->
+      <div id="materi-content-4" class="glass-card p-5 sm:p-7 space-y-5 hidden">
+        <div class="border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-tan uppercase tracking-wider">Bab 4: Post-test Loop (Telah Disetujui Guru)</span>
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">Struktur Perulangan DO-WHILE (Post-test Loop)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm leading-relaxed text-cloudy">
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book" class="w-4 h-4 text-tan"></i> Definisi &amp; Perbedaan dengan WHILE
+            </h3>
+            <p>
+              Perulangan <strong>DO-WHILE</strong> adalah jenis perulangan *Post-test Loop*, di mana blok instruksi <strong>dieksekusi terlebih dahulu minimal 1 KALI</strong>, baru kemudian syarat kondisinya diuji di bagian paling bawah.
+            </p>
+            <p>
+              Meskipun syarat kondisi bernilai <em>False</em> sejak awal, blok kode di dalam <code>do { ... }</code> dijamin tetap berjalan tepat 1 kali.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4 text-tan"></i> Contoh Penggunaan Nyata
+            </h3>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">1. Menu Transaksi Mesin ATM</div>
+              <p class="text-xs text-cloudy/80">Menu utama selalu tampil minimal sekali. Di akhir transaksi, mesin baru bertanya: <em>"Ingin transaksi lain? (Y/T)"</em>.</p>
+            </div>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">2. Konfirmasi Rematch Game</div>
+              <p class="text-xs text-cloudy/80">Game dimainkan minimal 1 ronde, setelah itu baru ditanyakan apakah ingin main lagi.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-editor-box text-xs">
+          <div class="syntax-comment mb-1">// Contoh Kode DO-WHILE Loop</div>
+          <span class="syntax-keyword">let</span> mainLagi = <span class="syntax-keyword">false</span>;<br>
+          <span class="syntax-keyword">do</span> {<br>
+          &nbsp;&nbsp;<span class="syntax-fn">console.log</span>(<span class="syntax-string">"Menjalankan game ronde ke-1..."</span>);<br>
+          } <span class="syntax-keyword">while</span> (mainLagi === <span class="syntax-keyword">true</span>);
+        </div>
+      </div>
+
+      <!-- TAB CONTENT 5: NESTED LOOP -->
+      <div id="materi-content-5" class="glass-card p-5 sm:p-7 space-y-5 hidden">
+        <div class="border-b border-white/10 pb-3">
+          <span class="text-xs font-bold text-tan uppercase tracking-wider">Bab 5: Advanced (Telah Disetujui Guru)</span>
+          <h2 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">Perulangan Bersarang (Nested Loop)</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 text-xs sm:text-sm leading-relaxed text-cloudy">
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="book" class="w-4 h-4 text-tan"></i> Definisi Nested Loop
+            </h3>
+            <p>
+              <strong>Nested Loop</strong> adalah struktur di mana terdapat satu perulangan di dalam perulangan lainnya (*Outer Loop* dan *Inner Loop*).
+            </p>
+            <p>
+              Untuk setiap 1 kali putaran pada <em>Outer Loop</em>, perulangan <em>Inner Loop</em> akan dijalankan penuh sampai selesai.
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <h3 class="font-extrabold text-white text-sm sm:text-base flex items-center gap-2">
+              <i data-lucide="compass" class="w-4 h-4 text-tan"></i> Contoh Penggunaan Nyata
+            </h3>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">1. Matriks Kursi Bioskop (Baris A-E, Kolom 1-10)</div>
+              <p class="text-xs text-cloudy/80">Sistem mencetak nomor kursi dari Baris A (1-10), lalu lanjut ke Baris B (1-10), dan seterusnya.</p>
+            </div>
+            <div class="p-3 bg-space-cadet rounded-xl border border-white/10 space-y-1">
+              <div class="font-bold text-tan">2. Papan Catur 8x8 Kotak</div>
+              <p class="text-xs text-cloudy/80">Memproses 8 baris horizontal yang masing-masing memiliki 8 petak kotak vertikal.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="code-editor-box text-xs">
+          <div class="syntax-comment mb-1">// Contoh Kode Nested Loop: Matriks Baris &amp; Kolom</div>
+          <span class="syntax-keyword">for</span> (<span class="syntax-keyword">let</span> baris = <span class="syntax-number">1</span>; baris &lt;= <span class="syntax-number">3</span>; baris++) {<br>
+          &nbsp;&nbsp;<span class="syntax-keyword">for</span> (<span class="syntax-keyword">let</span> kolom = <span class="syntax-number">1</span>; kolom &lt;= <span class="syntax-number">3</span>; kolom++) {<br>
+          &nbsp;&nbsp;&nbsp;&nbsp;<span class="syntax-fn">console.log</span>(<span class="syntax-string">`Posisi [${baris}, ${kolom}]`</span>);<br>
+          &nbsp;&nbsp;}<br>
+          }
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 2. DASHBOARD SIMULATOR (6 LABORATORIUM) -->
+    <!-- ========================================== -->
+    <section id="page-simulator-dashboard" class="page-view space-y-6 hidden animate-fadeIn">
+      
+      <div class="glass-card p-5 sm:p-6 flex flex-col md:flex-row items-center justify-between gap-3 border border-tan/20">
+        <div>
+          <span class="badge-clean badge-tan">
+            Yuk Simulasi!
+          </span>
+          <h1 class="text-xl sm:text-2xl font-display font-extrabold text-white mt-1">6 Loop Simulator</h1>
+          <p class="text-xs sm:text-sm text-cloudy mt-0.5">
+            Jalankan 2 simulasi contoh terpandu, lalu selesaikan 4 simulasi tantangan dengan menebak jenis perulangan yang paling tepat!
+          </p>
+        </div>
+      </div>
+
+      <!-- BAGIAN 1: 2 CONTOH TERPANDU -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-tan"></span>
+          <h2 class="text-xs sm:text-sm font-display font-extrabold uppercase tracking-wider text-tan">Bagian A: 2 Guided Examples</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          
+          <!-- Card 1: Contoh FOR -->
+          <div onclick="navigateTo('sim-for-decrement')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-300 flex items-center justify-center">
+                  <i data-lucide="trending-down" class="w-5 h-5"></i>
+                </div>
+                <span class="badge-clean badge-rose">Contoh 1: FOR Loop</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Ekspedisi Gunung &amp; Hitung Daya Tahan
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Pelajari struktur FOR Decrement terhitung pasti: karakter menghadapi rintangan gunung es, tiap rintangan mengurangi daya tahan hingga batas terminasi.
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Step-by-step Trace</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Buka Contoh <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 2: Contoh WHILE -->
+          <div onclick="navigateTo('sim-while-brankas')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-tsunami/15 border border-tsunami/30 text-cloudy flex items-center justify-center">
+                  <i data-lucide="lock" class="w-5 h-5"></i>
+                </div>
+                <span class="badge-clean badge-tsunami">Contoh 2: WHILE Loop</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Brankas Digital &amp; Hint Logika
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Pelajari struktur WHILE tak terhitung: tebak PIN dengan keypad. Loop terus meminta input selama tebakan belum tepat (Pre-test condition).
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Keypad &amp; Custom PIN</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Buka Contoh <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- BAGIAN 2: 4 TANTANGAN LOGIKA (TEBAK PERULANGAN) -->
+      <div class="space-y-3 pt-2">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <h2 class="text-xs sm:text-sm font-display font-extrabold uppercase tracking-wider text-emerald-400">Bagian B: 4 Tantangan Logika</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+          <!-- Card 3: Tantangan 1 Vending -->
+          <div onclick="navigateTo('sim-for-increment')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-tan/15 border border-tan/30 text-tan flex items-center justify-center">
+                  <i data-lucide="package" class="w-5 h-5"></i>
+                </div>
+                <span id="sim3-status-tag" class="badge-clean badge-tan">Tantangan 1</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Mesin Vending Kaleng Minuman
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Mesin mengeluarkan kaleng minuman pesanan secara perlahan satu per satu. Jalankan simulasi, lalu tebak jenis perulangannya!
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Uji &amp; Tebak Loop</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Tantangan <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 4: Tantangan 2 Dadu -->
+          <div onclick="navigateTo('sim-while-dadu')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 flex items-center justify-center">
+                  <i data-lucide="dice-5" class="w-5 h-5"></i>
+                </div>
+                <span id="sim4-status-tag" class="badge-clean badge-emerald">Tantangan 2</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Kocok Dadu Ludo Target
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Kocok dadu secara manual satu demi satu hingga angka target tercapai. Amati cara kerja loop dan tentukan jenis perulangannya!
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Manual Iteration</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Tantangan <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 5: Tantangan 3 Kasir (BARU) -->
+          <div onclick="navigateTo('sim-while-scanner')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 flex items-center justify-center">
+                  <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+                </div>
+                <span id="sim5-status-tag" class="badge-clean badge-tsunami">Tantangan 3 (Baru)</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Barcode Scanner Kasir Supermarket
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Kasir memeriksa barang di keranjang pembeli satu demi satu sampai tombol Bayar ditekan. Amati polanya dan tebak struktur loopnya!
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Scanner Interaktif</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Tantangan <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+          <!-- Card 6: Tantangan 4 Traffic Light (BARU) -->
+          <div onclick="navigateTo('sim-for-traffic')" class="duo-card duo-card-interactive p-4 sm:p-5 cursor-pointer flex flex-col justify-between group">
+            <div>
+              <div class="flex justify-between items-start mb-2.5">
+                <div class="w-10 h-10 rounded-xl bg-red-500/15 border border-red-500/30 text-red-300 flex items-center justify-center">
+                  <i data-lucide="timer" class="w-5 h-5"></i>
+                </div>
+                <span id="sim6-status-tag" class="badge-clean badge-rose">Tantangan 4 (Baru)</span>
+              </div>
+              <h3 class="text-base font-display font-extrabold text-white group-hover:text-tan transition">
+                Countdown Timer Lampu Lalu Lintas
+              </h3>
+              <p class="text-xs text-cloudy/80 mt-1.5 leading-relaxed">
+                Timer lampu merah menghitung mundur waktu dari 10 detik ke 0 sebelum berganti lampu hijau. Jalankan dan tebak jenis perulangannya!
+              </p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+              <span class="text-slate-gray font-mono">Digital Countdown</span>
+              <span class="text-tan flex items-center gap-1 group-hover:translate-x-1 transition">
+                Tantangan <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 3. SIMULATOR 1: CONTOH FOR (EKSPEDISI GUNUNG) -->
+    <!-- ========================================== -->
+    <section id="page-sim-for-decrement" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-rose">Contoh 1: FOR Decrement</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="mountain" class="w-5 h-5 text-tan"></i> Ekspedisi Gunung: Daya Tahan &amp; Rintangan
+        </h2>
+        <p class="text-xs text-cloudy">
+          Ubah parameter daya tahan dan pengurangan, lalu tekan tombol hadapi rintangan untuk mengeksekusi FOR loop secara bertahap!
+        </p>
+      </div>
+
+      <div class="code-editor-box space-y-3">
+        <div class="space-y-1 text-xs">
+          <div><span class="syntax-keyword">let</span> startHp = <input id="sim1-start-hp" type="number" value="5" min="1" max="10" class="code-inline-input">;</div>
+          <div><span class="syntax-keyword">let</span> minHp = <input id="sim1-min-hp" type="number" value="0" min="0" max="3" class="code-inline-input">;</div>
+          <div><span class="syntax-keyword">let</span> reductionStep = <input id="sim1-step" type="number" value="1" min="1" max="2" class="code-inline-input">;</div>
+          <br>
+          <div><span class="syntax-keyword">for</span> (<span class="syntax-keyword">let</span> nyawa = startHp; nyawa &gt; minHp; nyawa -= reductionStep) {</div>
+          <div class="pl-4 syntax-string">hadapiRintanganGunung(nyawa);</div>
+          <div>}</div>
+        </div>
+
+        <div class="pt-3 border-t border-slate-700/60 flex flex-wrap gap-2.5">
+          <button onclick="initSim1()" class="btn-secondary text-xs">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+          </button>
+          <button id="sim1-step-btn" onclick="stepSim1()" class="btn-danger text-xs">
+            <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i> Hadapi Rintangan (Step Loop)
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Scene & Console -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="glass-card p-4">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <i data-lucide="activity" class="w-3.5 h-3.5"></i> Visual Ekspedisi
+          </h3>
+          <div id="sim1-canvas"></div>
+        </div>
+
+        <div class="glass-card p-4 flex flex-col">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Terminal Log
+          </h3>
+          <pre id="sim1-console" class="flex-1 whitespace-pre-wrap max-h-[190px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400"></pre>
+        </div>
+      </div>
+
+      <!-- Tracing Table (No Horizontal Scroll) -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tabel Tracing Variabel
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Iterasi</th>
+                <th class="col-var">Nilai HP</th>
+                <th class="col-cond">Evaluasi (nyawa &gt; min)</th>
+                <th class="col-action">Aksi &amp; Status</th>
+              </tr>
+            </thead>
+            <tbody id="sim1-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 4. SIMULATOR 2: CONTOH WHILE (BRANKAS DIGITAL) -->
+    <!-- ========================================== -->
+    <section id="page-sim-while-brankas" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-tsunami">Contoh 2: WHILE Loop</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-5 h-5 text-tan"></i> Brankas Digital: Otentikasi PIN &amp; Hint Logika
+        </h2>
+        <p class="text-xs text-cloudy">
+          Gunakan petunjuk logika untuk menebak PIN rahasia. Perulangan WHILE akan terus meminta input selama tebakan belum tepat.
+        </p>
+      </div>
+
+      <!-- Clue & Keypad Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="glass-card p-4 space-y-3">
+          <div id="safe-door-status" class="text-center py-3 bg-space-cadet-deep rounded-xl border border-white/5">
+            <div class="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-space-cadet/80 border border-tan/30 text-tan mb-1.5">
+              <i data-lucide="lock" class="w-6 h-6"></i>
+            </div>
+            <div class="text-sm font-display font-extrabold text-tan">BRANKAS TERKUNCI</div>
+            <div class="text-[11px] text-slate-gray mt-0.5">Gunakan petunjuk logika untuk menebak PIN</div>
+          </div>
+
+          <div class="p-3 bg-tan/10 border border-tan/25 rounded-xl text-xs space-y-1">
+            <div class="font-bold text-tan flex items-center gap-1.5">
+              <i data-lucide="info" class="w-3.5 h-3.5"></i> Petunjuk Logika (Hint):
+            </div>
+            <p id="sim2-hint-text" class="text-cloudy text-xs leading-relaxed">
+              "PIN adalah 4 digit angka hasil dari (Tahun Kemerdekaan RI 1945 + 55)."
+            </p>
+          </div>
+
+          <div class="space-y-2.5">
+            <div class="relative flex items-center">
+              <input id="sim2-user-guess" type="password" maxlength="6" placeholder="PIN" class="w-full py-2.5 pl-10 pr-12 bg-space-cadet-deep border border-tan/40 rounded-xl font-mono text-center text-lg font-bold tracking-widest text-tan outline-none">
+              <button onclick="clearSafeKeypad()" class="absolute right-2.5 px-2.5 py-1 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-lg font-mono font-bold text-xs text-cloudy transition hover:text-white">
+                C
+              </button>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5">
+              <button onclick="inputSafeKeypad('1')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">1</button>
+              <button onclick="inputSafeKeypad('2')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">2</button>
+              <button onclick="inputSafeKeypad('3')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">3</button>
+              <button onclick="inputSafeKeypad('4')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">4</button>
+              <button onclick="inputSafeKeypad('5')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">5</button>
+              <button onclick="inputSafeKeypad('6')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">6</button>
+              <button onclick="inputSafeKeypad('7')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">7</button>
+              <button onclick="inputSafeKeypad('8')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">8</button>
+              <button onclick="inputSafeKeypad('9')" class="p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">9</button>
+              <button onclick="inputSafeKeypad('0')" class="col-span-3 p-2.5 bg-space-cadet hover:bg-space-cadet-dark border border-white/10 rounded-xl font-mono font-bold text-base text-white">0</button>
+            </div>
+
+            <button onclick="testSafePin()" class="w-full py-2.5 bg-tan text-space-cadet font-display font-extrabold text-xs rounded-xl shadow-md hover:bg-tan-light transition flex items-center justify-center gap-1.5">
+              <i data-lucide="key" class="w-4 h-4"></i> Uji Otentikasi PIN
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-3">
+          <div id="sim2-custom-pin-panel" class="hidden glass-card p-4 border border-emerald-500/40 bg-emerald-950/20 space-y-2.5">
+            <span class="badge-clean badge-emerald">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> Kustomisasi Terbuka
+            </span>
+            <h3 class="text-sm font-display font-bold text-white">Atur PIN &amp; Hint Barumu:</h3>
+            <div class="space-y-2 text-xs">
+              <div>
+                <label class="font-bold text-cloudy">PIN Baru (Angka):</label>
+                <input id="custom-pin-input" type="text" placeholder="Contoh: 1708" class="w-full p-2 bg-space-cadet-deep border border-tan/30 rounded-lg font-mono text-tan mt-0.5 outline-none">
+              </div>
+              <div>
+                <label class="font-bold text-cloudy">Petunjuk (Hint):</label>
+                <input id="custom-hint-input" type="text" placeholder="Contoh: Hari Kemerdekaan" class="w-full p-2 bg-space-cadet-deep border border-tan/30 rounded-lg text-cloudy mt-0.5 outline-none">
+              </div>
+              <button onclick="updateCustomSecretPin()" class="btn-success w-full py-2 rounded-lg font-bold text-xs mt-1">
+                Simpan PIN Baru
+              </button>
+            </div>
+          </div>
+
+          <div class="glass-card p-4 flex flex-col">
+            <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Log Keamanan WHILE
+            </h3>
+            <pre id="sim2-console" class="flex-1 whitespace-pre-wrap max-h-[190px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400">&gt; Sistem siap menerima input PIN...</pre>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tracing Table -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tracing Evaluasi Kondisi WHILE
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Coba</th>
+                <th class="col-var">Input PIN</th>
+                <th class="col-cond">Syarat (input !== secret)</th>
+                <th class="col-action">Status Akses</th>
+              </tr>
+            </thead>
+            <tbody id="sim2-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 5. SIMULATOR 3: TANTANGAN 1 - VENDING MACHINE -->
+    <!-- ========================================== -->
+    <section id="page-sim-for-increment" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-tan">Tantangan 1 (Uji &amp; Tebak)</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="package" class="w-5 h-5 text-tan"></i> Mesin Vending Kaleng Minuman
+        </h2>
+        <p class="text-xs text-cloudy">
+          Ubah jumlah pesanan, jalankan mesin, lalu tebak jenis perulangan yang dipakai oleh mesin ini!
+        </p>
+      </div>
+
+      <div class="code-editor-box space-y-3">
+        <div class="space-y-1 text-xs">
+          <div><span class="syntax-keyword">let</span> targetKaleng = <input id="sim3-target" type="number" value="4" min="1" max="6" class="code-inline-input">;</div>
+          <div>
+            <span class="syntax-keyword">let</span> jenis = <select id="sim3-drink-type" class="code-inline-select">
+              <option value="Cola Segar">Cola Segar</option>
+              <option value="Jus Jeruk">Jus Jeruk</option>
+              <option value="Kopi Dingin">Kopi Dingin</option>
+            </select>;
+          </div>
+        </div>
+
+        <button onclick="runSim3()" class="btn-primary text-xs">
+          <i data-lucide="play" class="w-3.5 h-3.5"></i> Operasikan Mesin Vending
+        </button>
+      </div>
+
+      <!-- Real Vending Machine Cabinet -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="vending-cabinet p-4 text-white flex flex-col justify-between min-h-[300px]">
+          <div>
+            <div class="flex justify-between items-center pb-2.5 border-b border-slate-700/60">
+              <span class="font-display font-extrabold tracking-wider text-xs text-tan flex items-center gap-1.5">
+                <i data-lucide="cpu" class="w-3.5 h-3.5"></i> VENDING CONTROLLER
+              </span>
+              <span class="badge-clean badge-emerald text-[9px]">ONLINE</span>
+            </div>
+
+            <!-- Glass Window -->
+            <div class="vending-glass p-3 mt-2.5 grid grid-cols-3 gap-2 text-center">
+              <div class="vending-slot p-2">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-tan/15 border border-tan/30 flex items-center justify-center text-tan">
+                  <i data-lucide="coffee" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="text-[10px] text-cloudy font-mono mt-1">Cola</div>
+              </div>
+              <div class="vending-slot p-2">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-amber-500/15 border border-amber-500/30 flex items-center justify-center text-amber-300">
+                  <i data-lucide="sun" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="text-[10px] text-cloudy font-mono mt-1">Jus</div>
+              </div>
+              <div class="vending-slot p-2">
+                <div class="w-7 h-7 mx-auto rounded-lg bg-tsunami/15 border border-tsunami/30 flex items-center justify-center text-cloudy">
+                  <i data-lucide="cup-soda" class="w-3.5 h-3.5"></i>
+                </div>
+                <div class="text-[10px] text-cloudy font-mono mt-1">Kopi</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-center py-1.5 min-h-[40px] flex items-center justify-center">
+            <div id="vending-chute-item"></div>
+          </div>
+
+          <div>
+            <div class="text-[10px] font-bold text-slate-gray mb-1 flex items-center gap-1">
+              <i data-lucide="inbox" class="w-3 h-3 text-tan"></i> Baki Kaleng:
+            </div>
+            <div id="vending-tray-items" class="min-h-[50px] bg-space-cadet-deep rounded-xl border border-white/10 p-2 flex flex-wrap gap-1.5 items-center justify-center"></div>
+          </div>
+        </div>
+
+        <div class="glass-card p-4 flex flex-col">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Console Monitor
+          </h3>
+          <pre id="sim3-console" class="flex-1 whitespace-pre-wrap max-h-[220px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400">&gt; Mesin siap...</pre>
+        </div>
+
+      </div>
+
+      <!-- Tracing Table -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tracing Table Mesin Vending
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Iterasi</th>
+                <th class="col-var">Variabel k</th>
+                <th class="col-cond">Evaluasi (k &lt;= target)</th>
+                <th class="col-action">Aksi Pengeluaran</th>
+              </tr>
+            </thead>
+            <tbody id="sim3-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CHALLENGE GUESS BOX -->
+      <div id="sim3-challenge-panel" class="hidden challenge-box space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-tan animate-pulse"></span>
+          <h3 class="font-display font-extrabold text-sm text-white">Tantangan Logika: Tebak Jenis Perulangan!</h3>
+        </div>
+        <p class="text-xs text-cloudy leading-relaxed">
+          Berdasarkan simulasi mesin vending di atas (jumlah pesanan kaleng sudah ditentukan secara pasti di awal), manakah jenis perulangan yang paling tepat?
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          <button onclick="submitLoopGuess('sim3', 'for')" data-loop-type="for" class="guess-btn">
+            <span>FOR Loop (Counted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim3', 'while')" data-loop-type="while" class="guess-btn">
+            <span>WHILE Loop (Uncounted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim3', 'do-while')" data-loop-type="do-while" class="guess-btn">
+            <span>DO-WHILE Loop</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="sim3-guess-feedback" class="hidden"></div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 6. SIMULATOR 4: TANTANGAN 2 - DADU LUDO -->
+    <!-- ========================================== -->
+    <section id="page-sim-while-dadu" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-emerald">Tantangan 2 (Uji &amp; Tebak)</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="dice-5" class="w-5 h-5 text-tan"></i> Kocok Dadu Ludo Target (Manual Step)
+        </h2>
+        <p class="text-xs text-cloudy">
+          Pilih angka target (misal angka 6), tekan tombol lempar dadu untuk menjalankan tiap iterasi, lalu tebak jenis perulangannya!
+        </p>
+      </div>
+
+      <div class="code-editor-box space-y-3">
+        <div class="space-y-1 text-xs">
+          <div><span class="syntax-keyword">let</span> targetDadu = <input id="sim4-target-dice" type="number" value="6" min="1" max="6" class="code-inline-input">;</div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-700/60 flex flex-wrap gap-2.5">
+          <button onclick="initSim4()" class="btn-secondary text-xs">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+          </button>
+          <button id="sim4-roll-btn" onclick="rollDiceStep()" class="btn-primary text-xs">
+            <i data-lucide="shuffle" class="w-3.5 h-3.5"></i> Lempar Dadu (Step Loop)
+          </button>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="glass-card p-4 flex flex-col items-center justify-center text-center min-h-[190px]">
+          <div id="dice-status-badge" class="px-3 py-1 bg-tan/15 text-tan border border-tan/30 font-bold rounded-full text-xs mb-3">
+            Target: Angka 6
+          </div>
+          <div id="dice-visual" class="dice-face select-none"></div>
+          <p class="text-[11px] text-slate-gray mt-3 font-semibold">Tekan tombol lempar dadu untuk menjalankan putaran loop</p>
+        </div>
+
+        <div class="glass-card p-4 flex flex-col">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Log Lemparan Dadu
+          </h3>
+          <pre id="sim4-console" class="flex-1 whitespace-pre-wrap max-h-[180px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400"></pre>
+        </div>
+
+      </div>
+
+      <!-- Tracing Table -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tracing Lemparan Dadu
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Lemparan</th>
+                <th class="col-var">Nilai Dadu</th>
+                <th class="col-cond">Syarat (dadu !== target)</th>
+                <th class="col-action">Keterangan</th>
+              </tr>
+            </thead>
+            <tbody id="sim4-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CHALLENGE GUESS BOX -->
+      <div id="sim4-challenge-panel" class="hidden challenge-box space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h3 class="font-display font-extrabold text-sm text-white">Tantangan Logika: Tebak Jenis Perulangan!</h3>
+        </div>
+        <p class="text-xs text-cloudy leading-relaxed">
+          Berdasarkan pengocokan dadu di atas (jumlah lemparan tidak bisa diprediksi sebelum angka target keluar), manakah jenis perulangan yang paling tepat?
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          <button onclick="submitLoopGuess('sim4', 'for')" data-loop-type="for" class="guess-btn">
+            <span>FOR Loop (Counted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim4', 'while')" data-loop-type="while" class="guess-btn">
+            <span>WHILE Loop (Uncounted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim4', 'do-while')" data-loop-type="do-while" class="guess-btn">
+            <span>DO-WHILE Loop</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="sim4-guess-feedback" class="hidden"></div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 7. SIMULATOR 5: TANTANGAN 3 - BARCODE SCANNER (BARU) -->
+    <!-- ========================================== -->
+    <section id="page-sim-while-scanner" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-tsunami">Tantangan 3 (Baru)</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="shopping-cart" class="w-5 h-5 text-tan"></i> Barcode Scanner Kasir Supermarket
+        </h2>
+        <p class="text-xs text-cloudy">
+          Scan barang belanjaan satu demi satu dari keranjang pembeli. Pembeli bisa menekan tombol Bayar kapan saja untuk menyelesaikan transaksi.
+        </p>
+      </div>
+
+      <!-- Scanner Controls -->
+      <div class="code-editor-box space-y-3">
+        <div class="flex items-center justify-between text-xs pb-2 border-b border-white/5">
+          <div><span class="syntax-keyword">while</span> (pembeliBelumSelesai &amp;&amp; adaBarang) {</div>
+          <span class="font-mono text-tan font-bold" id="sim5-item-count">0 Barang</span>
+        </div>
+
+        <div class="flex flex-wrap gap-2.5">
+          <button onclick="initSim5()" class="btn-secondary text-xs">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset Kasir
+          </button>
+          <button id="sim5-scan-btn" onclick="scanNextSupermarketItem()" class="btn-primary text-xs">
+            <i data-lucide="barcode" class="w-3.5 h-3.5"></i> Scan Barang Berikutnya
+          </button>
+          <button id="sim5-pay-btn" onclick="finishSupermarketShopping()" class="btn-success text-xs">
+            <i data-lucide="credit-card" class="w-3.5 h-3.5"></i> Selesai Belanja / Bayar
+          </button>
+        </div>
+      </div>
+
+      <!-- Scanner Visual & Receipt -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="scanner-conveyor p-4 text-white flex flex-col justify-between min-h-[220px]">
+          <div>
+            <div class="flex justify-between items-center pb-2 border-b border-slate-700/60">
+              <span class="font-display font-extrabold text-xs text-tan flex items-center gap-1.5">
+                <i data-lucide="scan" class="w-3.5 h-3.5"></i> OPTICAL BARCODE SCANNER
+              </span>
+              <span class="badge-clean badge-emerald text-[9px]">LASER READY</span>
+            </div>
+
+            <!-- Optical Beam Area -->
+            <div class="relative h-16 bg-space-cadet-deep rounded-xl my-3 flex items-center justify-center border border-white/5 overflow-hidden">
+              <div class="scanner-beam absolute left-0 right-0"></div>
+              <div class="text-xs font-mono text-cloudy/80 flex items-center gap-2">
+                <i data-lucide="package" class="w-4 h-4 text-tan"></i> Sensor Deteksi Barang
+              </div>
+            </div>
+          </div>
+
+          <!-- Struk Pembayaran -->
+          <div class="bg-space-cadet p-3 rounded-xl border border-white/10">
+            <div class="text-[10px] font-bold text-slate-gray mb-1.5 uppercase tracking-wider flex justify-between">
+              <span>Struk Belanja Pelanggan:</span>
+              <span id="sim5-total-price" class="text-tan font-bold text-xs">Rp 0</span>
+            </div>
+            <div id="sim5-receipt-list" class="space-y-1 max-h-[80px] overflow-y-auto pr-1">
+              <div class="text-slate-gray italic text-[11px]">Belum ada barang discan</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card p-4 flex flex-col">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Console Kasir
+          </h3>
+          <pre id="sim5-console" class="flex-1 whitespace-pre-wrap max-h-[190px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400">&gt; Sistem kasir siap...</pre>
+        </div>
+
+      </div>
+
+      <!-- Tracing Table -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tracing Transaksi Belanja
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Barang#</th>
+                <th class="col-var">Item Scan</th>
+                <th class="col-cond">Syarat (adaBarang)</th>
+                <th class="col-action">Aksi &amp; Subtotal</th>
+              </tr>
+            </thead>
+            <tbody id="sim5-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CHALLENGE GUESS BOX -->
+      <div id="sim5-challenge-panel" class="hidden challenge-box space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
+          <h3 class="font-display font-extrabold text-sm text-white">Tantangan Logika: Tebak Jenis Perulangan!</h3>
+        </div>
+        <p class="text-xs text-cloudy leading-relaxed">
+          Kasir melayani pembeli di mana jumlah barang di keranjang tidak dapat diketahui pasti sebelumnya dan loop berhenti ketika pembeli menekan Bayar. Manakah perulangan yang paling tepat?
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          <button onclick="submitLoopGuess('sim5', 'for')" data-loop-type="for" class="guess-btn">
+            <span>FOR Loop (Counted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim5', 'while')" data-loop-type="while" class="guess-btn">
+            <span>WHILE Loop (Uncounted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim5', 'do-while')" data-loop-type="do-while" class="guess-btn">
+            <span>DO-WHILE Loop</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="sim5-guess-feedback" class="hidden"></div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 8. SIMULATOR 6: TANTANGAN 4 - TRAFFIC LIGHT (BARU) -->
+    <!-- ========================================== -->
+    <section id="page-sim-for-traffic" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <div class="flex items-center justify-between gap-3">
+        <button onclick="navigateTo('simulator-dashboard')" class="btn-secondary text-xs">
+          <i data-lucide="arrow-left" class="w-3.5 h-3.5"></i> Kembali
+        </button>
+        <span class="badge-clean badge-rose">Tantangan 4 (Baru)</span>
+      </div>
+
+      <div class="glass-card p-4 sm:p-5 space-y-1.5">
+        <h2 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+          <i data-lucide="timer" class="w-5 h-5 text-tan"></i> Countdown Timer Lampu Lalu Lintas
+        </h2>
+        <p class="text-xs text-cloudy">
+          Lampu merah menghitung mundur waktu dari durasi awal pasti (misal: 10 detik) ke 0 sebelum berganti ke lampu hijau.
+        </p>
+      </div>
+
+      <!-- Traffic Controls -->
+      <div class="code-editor-box space-y-3">
+        <div class="space-y-1 text-xs">
+          <div><span class="syntax-keyword">let</span> durasiDetik = <input id="sim6-start-sec" type="number" value="10" min="5" max="20" class="code-inline-input">;</div>
+          <div><span class="syntax-keyword">for</span> (<span class="syntax-keyword">let</span> sec = durasiDetik; sec &gt; 0; sec--) {</div>
+          <div class="pl-4 syntax-string">tampilkanCountdownLampuMerah(sec);</div>
+          <div>}</div>
+        </div>
+
+        <div class="pt-2 border-t border-slate-700/60 flex flex-wrap gap-2.5">
+          <button onclick="initSim6()" class="btn-secondary text-xs">
+            <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i> Reset
+          </button>
+          <button id="sim6-start-btn" onclick="startTrafficCountdown()" class="btn-primary text-xs">
+            <i data-lucide="play" class="w-3.5 h-3.5"></i> Mulai Hitung Mundur
+          </button>
+        </div>
+      </div>
+
+      <!-- Traffic Visual & Console -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+        <div class="glass-card p-4 flex flex-col items-center justify-center min-h-[200px]">
+          <div class="flex items-center gap-6">
+            <!-- Physical Traffic Light Body -->
+            <div class="traffic-housing">
+              <div id="traffic-red" class="traffic-light red active"></div>
+              <div id="traffic-yellow" class="traffic-light yellow"></div>
+              <div id="traffic-green" class="traffic-light green"></div>
+            </div>
+
+            <!-- Digital 7-Segment Countdown Display -->
+            <div class="text-center">
+              <div class="text-[10px] font-bold text-slate-gray uppercase tracking-wider mb-1">Timer Digital:</div>
+              <div id="sim6-countdown-display" class="w-24 h-16 rounded-xl bg-space-cadet-deep border border-tan/30 text-tan font-mono text-3xl font-black flex items-center justify-center shadow-inner">
+                10s
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card p-4 flex flex-col">
+          <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2 flex items-center gap-1.5">
+            <i data-lucide="terminal" class="w-3.5 h-3.5"></i> Console Lalu Lintas
+          </h3>
+          <pre id="sim6-console" class="flex-1 whitespace-pre-wrap max-h-[190px] overflow-y-auto p-2.5 bg-space-cadet-dark rounded-xl border border-white/5 font-mono text-xs text-emerald-400">&gt; Lampu siap...</pre>
+        </div>
+
+      </div>
+
+      <!-- Tracing Table -->
+      <div class="glass-card p-4">
+        <h3 class="font-display font-bold text-tan text-xs uppercase tracking-wider mb-2.5 flex items-center gap-1.5">
+          <i data-lucide="table" class="w-3.5 h-3.5"></i> Tracing Countdown Waktu
+        </h3>
+        <div class="trace-table-wrapper">
+          <table class="trace-table">
+            <thead>
+              <tr>
+                <th class="col-iter">Iterasi</th>
+                <th class="col-var">Detik</th>
+                <th class="col-cond">Syarat (sec &gt; 0)</th>
+                <th class="col-action">Status Sinyal</th>
+              </tr>
+            </thead>
+            <tbody id="sim6-trace-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- CHALLENGE GUESS BOX -->
+      <div id="sim6-challenge-panel" class="hidden challenge-box space-y-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-red-400 animate-pulse"></span>
+          <h3 class="font-display font-extrabold text-sm text-white">Tantangan Logika: Tebak Jenis Perulangan!</h3>
+        </div>
+        <p class="text-xs text-cloudy leading-relaxed">
+          Sistem lampu merah menghitung mundur waktu dari durasi pasti (misal 10 detik ke 0 dengan decrement -1). Manakah perulangan yang paling tepat?
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+          <button onclick="submitLoopGuess('sim6', 'for')" data-loop-type="for" class="guess-btn">
+            <span>FOR Loop (Counted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim6', 'while')" data-loop-type="while" class="guess-btn">
+            <span>WHILE Loop (Uncounted)</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+          <button onclick="submitLoopGuess('sim6', 'do-while')" data-loop-type="do-while" class="guess-btn">
+            <span>DO-WHILE Loop</span>
+            <i data-lucide="chevron-right" class="w-4 h-4"></i>
+          </button>
+        </div>
+
+        <div id="sim6-guess-feedback" class="hidden"></div>
+      </div>
+
+    </section>
+
+    <!-- ========================================== -->
+    <!-- 9. HALAMAN KUIS (10 SOAL KONSEP & PERULANGAN) -->
+    <!-- ========================================== -->
+    <section id="page-kuis" class="page-view space-y-5 hidden animate-fadeIn">
+      
+      <!-- Top Quiz Progress Header -->
+      <div class="glass-card p-4 sm:p-5 flex flex-col md:flex-row items-center justify-between gap-3 border border-tan/20">
+        <div>
+          <h1 class="text-lg sm:text-xl font-display font-extrabold text-white flex items-center gap-2">
+            <i data-lucide="check-square" class="w-5 h-5 text-tan"></i> Evaluasi Pemahaman Mandiri (10 Soal)
+          </h1>
+          <p class="text-xs text-tsunami mt-0.5" id="quiz-progress-text">Soal 1 dari 10</p>
+        </div>
+        
+        <div class="w-full md:w-56 bg-space-cadet-deep h-2 rounded-full overflow-hidden border border-white/10">
+          <div id="quiz-progress-bar" class="bg-tan h-full transition-all duration-300" style="width: 10%"></div>
+        </div>
+      </div>
+
+      <!-- Quiz Interactive Card Container -->
+      <div id="quiz-card-container"></div>
+
+    </section>
+
+  </main>
+
+  <!-- ========================================== -->
+  <!-- MODAL PENGATURAN (SOUND, MUSIK, BAHASA) -->
+  <!-- ========================================== -->
+  <div id="settings-modal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="glass-card p-5 sm:p-7 max-w-sm sm:max-w-md w-full border border-tan/30 space-y-4 shadow-2xl">
+      
+      <div class="flex items-center justify-between border-b border-white/10 pb-3">
+        <h3 class="text-base font-display font-bold text-white flex items-center gap-2">
+          <i data-lucide="sliders-horizontal" class="w-4 h-4 text-tan"></i> Pengaturan Pembelajaran
+        </h3>
+        <button onclick="closeSettingsModal()" class="text-slate-gray hover:text-white p-1">
+          <i data-lucide="x" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+      <!-- Setting 1: Sound FX -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <i data-lucide="volume-2" class="w-3.5 h-3.5 text-tan"></i> Efek Suara Interaktif (SFX)
+          </span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="setting-sfx-toggle" class="sr-only peer">
+            <div class="w-9 h-5 bg-space-cadet-deep peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-tan"></div>
+          </label>
+        </div>
+        <input type="range" id="setting-sfx-vol" min="0" max="100" class="w-full h-1.5 bg-space-cadet-deep rounded-lg appearance-none cursor-pointer accent-tan">
+      </div>
+
+      <!-- Setting 2: Background Music Lo-Fi -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold text-white flex items-center gap-1.5">
+            <i data-lucide="music" class="w-3.5 h-3.5 text-tan"></i> Musik Latar Santai (Chill Ambient BGM)
+          </span>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="setting-bgm-toggle" class="sr-only peer">
+            <div class="w-9 h-5 bg-space-cadet-deep peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-tan"></div>
+          </label>
+        </div>
+        <input type="range" id="setting-bgm-vol" min="0" max="100" class="w-full h-1.5 bg-space-cadet-deep rounded-lg appearance-none cursor-pointer accent-tan">
+        <p class="text-[10px] text-slate-gray">Harmoni akor synthesizer lembut untuk menjaga fokus belajar tanpa distraksi.</p>
+      </div>
+
+      <!-- Setting 3: Language -->
+      <div class="space-y-1 text-xs">
+        <label class="font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-tan"></i> Bahasa Antarmuka
+        </label>
+        <select id="setting-language-select" class="w-full p-2 rounded-lg bg-space-cadet-deep border border-tan/30 text-tan font-display font-semibold outline-none">
+          <option value="id">Bahasa Indonesia (Utama)</option>
+          <option value="en">English (Terminologi Kode)</option>
+        </select>
+      </div>
+
+      <!-- Setting 4: Student Name -->
+      <div class="space-y-1 text-xs">
+        <label class="font-bold text-white flex items-center gap-1.5">
+          <i data-lucide="user" class="w-3.5 h-3.5 text-tan"></i> Nama Siswa
+        </label>
+        <input type="text" id="setting-student-name" class="w-full p-2 rounded-lg bg-space-cadet-deep border border-tan/30 text-white outline-none">
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2 pt-2 border-t border-white/10">
+        <button onclick="resetLearningProgress()" class="btn-danger flex-1 text-xs">
+          Reset Progres
+        </button>
+        <button onclick="updateSettingsFromModal()" class="btn-primary flex-1 text-xs">
+          Simpan Pengaturan
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- MODAL PERSETUJUAN GURU UNTUK MATERI TERKUNCI -->
+  <!-- ========================================== -->
+  <div id="teacher-approval-modal" class="fixed inset-0 z-50 modal-overlay flex items-center justify-center p-4 hidden">
+    <div class="glass-card p-5 sm:p-7 max-w-sm sm:max-w-md w-full border border-tan/30 text-center space-y-3.5 shadow-2xl">
+      
+      <div class="w-12 h-12 mx-auto rounded-xl bg-tan/15 border border-tan/30 flex items-center justify-center text-tan">
+        <i data-lucide="lock" class="w-6 h-6"></i>
+      </div>
+
+      <div>
+        <h2 id="teacher-modal-title" class="text-base sm:text-lg font-display font-bold text-white">Materi Memerlukan Persetujuan Guru</h2>
+        <p class="text-xs text-cloudy mt-1 leading-relaxed">
+          Materi lanjutan (DO-WHILE &amp; Nested Loop) dikunci untuk memastikan siswa telah memahami 3 konsep dasar sebelumnya.
+        </p>
+      </div>
+
+      <div class="space-y-1.5 text-left">
+        <label class="text-xs font-bold text-cloudy">Kode Izin Guru (Passcode):</label>
+        <input id="teacher-passcode-input" type="text" placeholder="Masukkan Kode" class="w-full p-2.5 bg-space-cadet-deep border border-tan/30 rounded-xl font-mono text-xs sm:text-sm font-bold text-center uppercase tracking-wider text-tan outline-none focus:border-white">
+        <div id="teacher-approval-error" class="text-xs font-bold text-red-400 hidden text-center"></div>
+      </div>
+
+      <div class="flex gap-2 pt-1">
+        <button onclick="closeTeacherApprovalModal()" class="btn-secondary flex-1 text-xs">
+          Batal
+        </button>
+        <button onclick="submitTeacherApproval()" class="btn-primary flex-1 text-xs">
+          Buka Materi
+        </button>
+      </div>
+
+      <p class="text-[10px] text-slate-gray">
+        💡 <em>Petunjuk: Gunakan kode dari guru untuk membuka akses materi.</em>
+      </p>
+
+    </div>
+  </div>
+
+  <!-- Application Script Engine -->
+  <script src="app.js"></script>
+</body>
+</html>
